@@ -3,13 +3,13 @@ export async function fetchAdobeTerms() {
 
   const res = await fetch(url)
   if (!res.ok) {
-    console.error('エラー:', res.status)
+    console.error('エラー:', res.status);
     return
   }
 
   const html = await res.text();
 
-  console.log(html)
+  console.log(html);
 
 }
 

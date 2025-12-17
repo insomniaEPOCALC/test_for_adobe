@@ -12,3 +12,4 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npx tsx src/test/testFetchAdobe.ts
+      - run: curl -I -L --max-time 30 https://www.adobe.com/jp/legal/terms.html
