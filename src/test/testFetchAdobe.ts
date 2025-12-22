@@ -61,7 +61,7 @@ export function gitDiff(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(
-      `git diff --no-index --color=never -U2 --ignore-blank-lines -w ${beforePath} ${afterPath}`,
+      `git diff --no-index --color=never -U1 --ignore-blank-lines -w  --word-diff=plain ${beforePath} ${afterPath}`,
       (err, stdout, stderr) => {
         if (err && err.code !== 1) {
           reject(stderr || err)
