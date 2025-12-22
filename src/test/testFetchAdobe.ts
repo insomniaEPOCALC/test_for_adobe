@@ -1,16 +1,30 @@
 import { readFile } from 'fs/promises'
-import { writeFile } from "fs/promises";
+import { writeFile } from 'fs/promises'
 import { exec } from 'child_process'
+import * as cheerio from 'cheerio'
 
 export async function fetchAdobeTerms() {
   const html = await readFile('adobe.html', 'utf8')
 
   console.log(html)
+
+  const parseFunc = cheerio.load(html)
+
+  parseFunc('script, style, noscript').remove()
+
+  const parsedHtml = parseFunc('body')
+    .text()
+    .replace(/\r/g, '\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+
+  console.log(parsedHtml)
 }
 
 export async function compareTexts() {
   try {
-    const diffText = await gitDiff('src/text/a.txt', 'src/text/b.txt')
+    const diffText = await gitDiff('src/text/a.txt', 'adobe.html')
 
     if (diffText.trim().length === 0) {
       console.log('差分なし')
@@ -25,16 +39,15 @@ export async function compareTexts() {
 export async function writeText(text: string) {
   try {
     await writeFile('src/text/a.txt', text, 'utf8')
-    console.log("ファイルが正常に書き込まれました。");
+    console.log('ファイルが正常に書き込まれました。')
   } catch (error) {
-    console.error("ファイルの書き込みに失敗しました:", error);
+    console.error('ファイルの書き込みに失敗しました:', error)
   }
 }
 
-export async function writeTest(){
-  writeText("this is a test");
+export async function writeTest() {
+  writeText('this is a test')
 }
-
 
 export function gitDiff(
   beforePath: string,
