@@ -4,21 +4,21 @@ import { exec } from 'child_process'
 import * as cheerio from 'cheerio'
 
 export async function fetchAdobeTerms() {
-  const html = await readFile('adobe.html', 'utf8')
+  const html = await readFile('adobe.html', 'utf8');
 
-  const parseFunc = cheerio.load(html)
+  const parseFunc = cheerio.load(html);
 
-  parseFunc('script, style, noscript').remove()
+  parseFunc('script, style, noscript').remove();
 
   const parsedHtml = parseFunc('body')
     .text()
     .replace(/\r/g, '\n')
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
-    .trim()
+    .trim();
 
-  console.log(parsedHtml)
-  writeText(parsedHtml)
+  console.log(parsedHtml);
+  writeText(parsedHtml);
 }
 
 export async function compareTexts() {
