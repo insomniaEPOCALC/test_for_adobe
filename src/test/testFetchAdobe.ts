@@ -28,6 +28,51 @@ export async function fetchAdobeTerms() {
   await writeText(parsedHtml)
 }
 
+export async function getAIText(diff: string, url: string) {
+  const token = process.env.GITHUB_TOKEN
+  if (!token) throw new Error('GITHUB_TOKEN is missing')
+
+  const prompt = [
+    `次の規約ページの差分を、Slack通知向けに日本語で短く要約してください。`,
+    ``,
+    `- 対象URL: ${url}`,
+    ``,
+    `要約の条件:`,
+    `- 3〜6個の箇条書き`,
+    `- 変更点の種類（追加/削除/言い回し変更/日付更新など）を優先`,
+    `- 推測はしない（差分から読み取れる範囲のみ）`,
+    ``,
+    `差分:`,
+    diff
+  ].join('\n')
+
+  const res = await fetch(
+    'https://models.github.ai/inference/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2,
+        max_tokens: 300
+      })
+    }
+  )
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`GitHub Models API failed: ${res.status} ${body}`)
+  }
+
+  const data = (await res.json()) as any
+  console.log(data)
+}
+
 export async function compareTexts() {
   try {
     const diffText = await gitDiff('src/text/a.txt', 'src/text/b.txt')
@@ -36,6 +81,7 @@ export async function compareTexts() {
       console.log('差分なし')
     } else {
       console.log(diffText)
+      await getAIText(diffText, 'https://www.adobe.com/jp/legal/terms.html')
     }
   } catch (e) {
     console.error(e)
@@ -61,7 +107,7 @@ export function gitDiff(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(
-      `git diff --no-index --color=never -U1 --ignore-blank-lines -w  --word-diff=plain ${beforePath} ${afterPath}`,
+      `git diff --no-index --color=never -U0 --ignore-blank-lines -w  --word-diff=plain ${beforePath} ${afterPath}`,
       (err, stdout, stderr) => {
         if (err && err.code !== 1) {
           reject(stderr || err)

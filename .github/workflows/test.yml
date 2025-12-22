@@ -2,6 +2,9 @@ name: test-action
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  models: read
 jobs:
   test:
     runs-on: ubuntu-latest
