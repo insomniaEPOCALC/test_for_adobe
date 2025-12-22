@@ -17,6 +17,14 @@ export async function fetchAdobeTerms() {
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 
+  parsedHtml
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0)
+    .filter((l) => !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(l))
+    .filter((l) => l !== 'style' && l !== 'layout')
+    .join('\n')
+
   await writeText(parsedHtml)
 }
 
@@ -53,7 +61,7 @@ export function gitDiff(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(
-      `git diff --no-index --color=never ${beforePath} ${afterPath}`,
+      `git diff --no-index --color=never -U2 --ignore-blank-lines -w ${beforePath} ${afterPath}`,
       (err, stdout, stderr) => {
         if (err && err.code !== 1) {
           reject(stderr || err)
