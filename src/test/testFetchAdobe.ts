@@ -6,8 +6,6 @@ import * as cheerio from 'cheerio'
 export async function fetchAdobeTerms() {
   const html = await readFile('adobe.html', 'utf8')
 
-  console.log(html)
-
   const parseFunc = cheerio.load(html)
 
   parseFunc('script, style, noscript').remove()
@@ -20,6 +18,7 @@ export async function fetchAdobeTerms() {
     .trim()
 
   console.log(parsedHtml)
+  writeText(parsedHtml)
 }
 
 export async function compareTexts() {
