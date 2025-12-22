@@ -70,7 +70,8 @@ export async function getAIText(diff: string, url: string) {
   }
 
   const data = (await res.json()) as any
-  console.log(data)
+  const summary = data?.choices?.[0]?.message?.content
+  console.log(summary)
 }
 
 export async function compareTexts() {
