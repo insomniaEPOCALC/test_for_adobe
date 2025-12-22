@@ -18,3 +18,4 @@ jobs:
       - run: npx tsx src/test/testFetchAdobe.ts
         env:
           NODE_OPTIONS: --dns-result-order=ipv4first
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
