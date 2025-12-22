@@ -39,6 +39,8 @@ export async function writeText(text: string) {
   try {
     await writeFile('src/text/a.txt', text, 'utf8')
     console.log('ファイルが正常に書き込まれました。')
+    const text = await readFile('src/text/a.txt', 'utf8')
+    console.log(text);
   } catch (error) {
     console.error('ファイルの書き込みに失敗しました:', error)
   }
@@ -67,5 +69,5 @@ export function gitDiff(
 }
 
 fetchAdobeTerms().catch(console.error)
-compareTexts().catch(console.error)
-writeTest().catch(console.error)
+//compareTexts().catch(console.error)
+//writeTest().catch(console.error)
