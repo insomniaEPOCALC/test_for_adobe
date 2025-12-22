@@ -17,7 +17,6 @@ export async function fetchAdobeTerms() {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
-  console.log(parsedHtml);
   writeText(parsedHtml);
 }
 
@@ -69,5 +68,5 @@ export function gitDiff(
 }
 
 fetchAdobeTerms().catch(console.error)
-//compareTexts().catch(console.error)
+compareTexts().catch(console.error)
 //writeTest().catch(console.error)
