@@ -23,7 +23,7 @@ export async function fetchAdobeTerms() {
 
 export async function compareTexts() {
   try {
-    const diffText = await gitDiff('src/text/a.txt', 'adobe.html')
+    const diffText = await gitDiff('src/text/a.txt', 'src/text/b.txt')
 
     if (diffText.trim().length === 0) {
       console.log('差分なし')
