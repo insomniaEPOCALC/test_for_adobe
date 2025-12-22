@@ -38,8 +38,6 @@ export async function writeText(text: string) {
   try {
     await writeFile('src/text/a.txt', text, 'utf8')
     console.log('ファイルが正常に書き込まれました。')
-    const writtenText = await readFile('src/text/a.txt', 'utf8')
-    console.log(writtenText);
   } catch (error) {
     console.error('ファイルの書き込みに失敗しました:', error)
   }
