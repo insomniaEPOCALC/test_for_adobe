@@ -66,6 +66,6 @@ export function gitDiff(
   })
 }
 
-//fetchAdobeTerms().catch(console.error)
+fetchAdobeTerms().catch(console.error)
 compareTexts().catch(console.error)
 writeTest().catch(console.error)
