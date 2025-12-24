@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 24
       - run: npm install
-      - run: curl -L --max-time 60 -o adobe.html https://www.adobe.com/jp/legal/terms.html
+      - run: curl -L --max-time 60 -o adobe.txt https://www.adobe.com/jp/legal/terms.html
       - run: npx tsx src/test/testFetchAdobe.ts
         env:
           NODE_OPTIONS: --dns-result-order=ipv4first

@@ -3,7 +3,7 @@ import { execFile } from "node:child_process";
 import * as cheerio from 'cheerio'
 
 export async function fetchAdobeTerms() {
-  const html = await readFile('adobe.html', 'utf8')
+  const html = await readFile('adobe.txt', 'utf8')
 
   const parseFunc = cheerio.load(html)
 
@@ -69,7 +69,7 @@ export async function getAIText(diff: string, url: string) {
 
 export async function compareTexts() {
   try {
-    const diffText = await gitDiff('src/text/a.txt', 'src/text/b.txt')
+    const diffText = await gitDiff('src/text/latestAdobePolicy.txt', 'adobe.txt')
 
     if (diffText.trim().length === 0) {
       console.log('差分なし')
