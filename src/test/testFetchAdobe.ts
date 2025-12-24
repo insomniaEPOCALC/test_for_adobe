@@ -1,6 +1,5 @@
-import { readFile } from 'fs/promises'
-import { writeFile } from 'fs/promises'
-import { exec } from 'child_process'
+import { readFile, writeFile  } from 'fs/promises'
+import { execFile } from "node:child_process";
 import * as cheerio from 'cheerio'
 
 export async function fetchAdobeTerms() {
@@ -17,13 +16,6 @@ export async function fetchAdobeTerms() {
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 
-  parsedHtml
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0)
-    .filter((l) => !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(l))
-    .filter((l) => l !== 'style' && l !== 'layout')
-    .join('\n')
 
   await writeText(parsedHtml)
 }
@@ -58,6 +50,7 @@ export async function getAIText(diff: string, url: string) {
       },
       body: JSON.stringify({
         model: 'openai/gpt-4o-mini',
+        //TODO: https://github.com/marketplace/models/azure-openai/gpt-4-1-mini に変更(無料枠でのレート制限が緩いため)
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
         max_tokens: 300
@@ -99,25 +92,32 @@ export async function writeText(text: string) {
 }
 
 export async function writeTest() {
-  writeText('this is a test')
+  await writeText('this is a test')
 }
 
-export function gitDiff(
-  beforePath: string,
-  afterPath: string
-): Promise<string> {
+export function gitDiff(beforePath: string, afterPath: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    exec(
-      `git diff --no-index --color=never -U0 --ignore-blank-lines -w  --word-diff=plain ${beforePath} ${afterPath}`,
+    execFile(
+      "git",
+      [
+        "diff",
+        "--no-index",
+        "--color=never",
+        "-U0",
+        "--ignore-blank-lines",
+        "-w",
+        "--word-diff=plain",
+        "--",
+        beforePath,
+        afterPath,
+      ],
       (err, stdout, stderr) => {
-        if (err && err.code !== 1) {
-          reject(stderr || err)
-        } else {
-          resolve(stdout)
-        }
+        const code = (err as any)?.code;
+        if (err && code !== 1) reject(stderr || err);
+        else resolve(stdout);
       }
-    )
-  })
+    );
+  });
 }
 
 async function main() {
