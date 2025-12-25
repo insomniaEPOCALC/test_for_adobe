@@ -54,6 +54,7 @@ export async function main() {
   console.log("slackText:" + slackText);
 
   //await sendSlack(slackText);
+  //TODO: Slack通知テスト時にはコメントアウトを外す
 
   await writeFile("text/latestAdobePolicy.txt", fetchedHtml, "utf8");
 }
