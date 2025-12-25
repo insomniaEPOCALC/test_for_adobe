@@ -188,12 +188,38 @@ export async function sendGAS(payload: string) {
   if (!endpoint) throw new Error("GAS_WEBHOOK_URL is missing");
   if (!secret) throw new Error("GAS_SHARED_SECRET is missing");
 
-  const res = await fetch(endpoint, {
+  const body = JSON.stringify({ secret, payload });
+  const headers = { "Content-Type": "application/json" };
+
+  const res1 = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ secret, payload }),
+    headers,
+    body,
     redirect: "manual",
   });
+
+  if ([302, 303, 307, 308].includes(res1.status)) {
+    const loc = res1.headers.get("location");
+    if (!loc) throw new Error(`GAS redirect without Location (status=${res1.status})`);
+
+    const res2 = await fetch(loc, {
+      method: "POST",
+      headers,
+      body,
+      redirect: "follow",
+    });
+
+    if (!res2.ok) {
+      throw new Error(`GAS error after redirect: ${res2.status} ${await res2.text().catch(() => "")}`);
+    }
+    return;
+  }
+
+  if (!res1.ok) {
+    throw new Error(`GAS error: ${res1.status} ${await res1.text().catch(() => "")}`);
+  }
+}
+
 
   const text = await res.text().catch(() => "");
 
