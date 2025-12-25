@@ -200,7 +200,8 @@ export async function sendGAS(payload: string) {
 
   if ([302, 303, 307, 308].includes(res1.status)) {
     const loc = res1.headers.get("location");
-    if (!loc) throw new Error(`GAS redirect without Location (status=${res1.status})`);
+    if (!loc)
+      throw new Error(`GAS redirect without Location (status=${res1.status})`);
 
     const res2 = await fetch(loc, {
       method: "POST",
@@ -208,28 +209,22 @@ export async function sendGAS(payload: string) {
       body,
       redirect: "follow",
     });
+    console.log("[GAS] status:", res2.status);
+    console.log("[GAS] location:", res2.headers.get("location"));
 
     if (!res2.ok) {
-      throw new Error(`GAS error after redirect: ${res2.status} ${await res2.text().catch(() => "")}`);
+      throw new Error(
+        `GAS error after redirect: ${res2.status} ${await res2.text().catch(() => "")}`
+      );
     }
     return;
   }
 
   if (!res1.ok) {
-    throw new Error(`GAS error: ${res1.status} ${await res1.text().catch(() => "")}`);
-  }
-}
-
-
-  const text = await res.text().catch(() => "");
-
-  console.log("[GAS] status:", res.status);
-  console.log("[GAS] location:", res.headers.get("location"));
-  console.log("[GAS] body:", text.slice(0, 500));
-  if (!res.ok)
     throw new Error(
-      `GAS error: ${res.status} ${await res.text().catch(() => "")}`
+      `GAS error: ${res1.status} ${await res1.text().catch(() => "")}`
     );
+  }
 }
 
 export async function sendSlack(text: string) {
