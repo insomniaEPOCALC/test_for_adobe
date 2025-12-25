@@ -11,8 +11,11 @@ const DOCS_URL =
 export async function main() {
   const fetchedHtml = await readFile("adobe.txt", "utf8");
 
+  console.log("Fetched HTML:", fetchedHtml);
+
   const prevHtml = await readFile("text/latestAdobePolicy.txt", "utf8");
 
+    console.log("Previous HTML:", prevHtml);
   if (fetchedHtml === prevHtml) {
     console.log("No changes detected.");
     return;
