@@ -67,19 +67,20 @@ export function extractH3Sections(html: string): Map<string, string> {
     const id = h3.attr("id");
     if (!id) return;
 
-    const parts: string[] = [];
     const heading = h3.text().trim();
+
+    const bodyNodes = h3.nextUntil("h3[id]");
+
+    const parts: string[] = [];
     if (heading) parts.push(`# ${heading}`);
 
-    let next = h3.next();
-    while (next.length && !next.is("h3[id]")) {
-      const txt = next.text().trim();
-      if (txt) parts.push(txt);
-      next = next.next();
-    }
+    bodyNodes.each((_, node) => {
+      const t = $(node).text().trim();
+      if (t) parts.push(t);
+    });
 
     const body = parts
-      .join("\n")
+      .join("\n\n")
       .replace(/\r/g, "\n")
       .replace(/[ \t]+\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
@@ -143,6 +144,8 @@ export function gitDiff(
     execFile(
       "git",
       [
+        "-c",
+        "core.quotepath=false",
         "diff",
         "--no-index",
         "--color=never",
