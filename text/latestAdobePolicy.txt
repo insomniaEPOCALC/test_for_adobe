@@ -107,7 +107,7 @@
         </div>
         <div class="text xxs-spacing-bottom">
           <div>
-            <div data-valign="middle">2025年10月3日公開。2025年10月3日発効。本基本利用条件は、以前のすべてのバージョンを置き換えます。</div>
+            <div data-valign="middle">2025年10月7日公開。2025年10月7日発効。本基本利用条件は、以前のすべてのバージョンを置き換えます。</div>
           </div>
         </div>
       </div>

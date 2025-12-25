@@ -17,6 +17,13 @@ export async function main() {
     console.log("No changes detected.");
     return;
   }
+  const updatedAt = fetchedHtml.match(/(\d{4}年\d{1,2}月\d{1,2}日)公開/);
+  if (!updatedAt) {
+    throw new Error("Failed to extract updated date");
+  }
+
+  const updatedDate = new Date(Number(updatedAt[1]), Number(updatedAt[2]) - 1, Number(updatedAt[3]));
+
 
   const afterMap = extractH3Sections(fetchedHtml);
 
@@ -46,7 +53,9 @@ export async function main() {
 
   const slackText =
     `❗️Adobe規約が更新されました\n` +
-    `変更日:${new Date().toLocaleString("ja-JP")}\n` +
+    `変更日:\n` +
+    updatedDate.toISOString().split("T")[0] +
+    `\n\n` +
     `変更箇所:\n` +
     $links.map((url) => `- ${url}`).join("\n") +
     `\n\n差分ファイル:\n` +
