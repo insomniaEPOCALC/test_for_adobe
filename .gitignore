@@ -103,3 +103,4 @@ __tests__/runner/*
 
 !.gitignore
 node_modules/
+.vscode/
