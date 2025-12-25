@@ -24,8 +24,6 @@ export async function main() {
     throw new Error("Failed to extract updated date");
   }
 
-  const updatedDate = new Date(Number(updatedAt[1]), Number(updatedAt[2]) - 1, Number(updatedAt[3]));
-
 
   const afterMap = extractH3Sections(fetchedHtml);
 
@@ -48,7 +46,7 @@ export async function main() {
   const diff = await buildSectionDiffs(changedIds, beforeMap, afterMap);
 
   console.log("diffText:" + diff);
-  await sendGAS(diff);
+  // await sendGAS(diff);
 
   console.log("diff length:", diff.length);
   console.log("diff preview:", diff.slice(0, 500));
@@ -56,7 +54,7 @@ export async function main() {
   const slackText =
     `❗️Adobe規約が更新されました\n` +
     `変更日:\n` +
-    updatedDate.toISOString().split("T")[0] +
+    updatedAt +
     `\n\n` +
     `変更箇所:\n` +
     $links.map((url) => `- ${url}`).join("\n") +
