@@ -46,7 +46,6 @@ export async function main() {
 
   const slackText =
     `❗️Adobe規約が更新されました\n` +
-    `対象URL: ${TARGET_URL}\n` +
     `変更箇所:\n` +
     $links.map((url) => `- ${url}`).join("\n") +
     `\n\n差分ファイル:\n` +
