@@ -18,6 +18,7 @@ export async function main() {
     return;
   }
   const updatedAt = fetchedHtml.match(/(\d{4}年\d{1,2}月\d{1,2}日)公開/);
+  console.log("updatedAt:" + updatedAt);
   if (!updatedAt) {
     throw new Error("Failed to extract updated date");
   }
