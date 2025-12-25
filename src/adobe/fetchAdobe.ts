@@ -182,7 +182,7 @@ export function gitDiff(
   });
 }
 
-export async function sendGAS(payload: string) {
+export async function sendGAS(diff: string) {
   const endpoint = process.env.GAS_WEBHOOK_URL;
   const secret = process.env.GAS_SHARED_SECRET;
   if (!endpoint) throw new Error("GAS_WEBHOOK_URL is missing");
@@ -190,22 +190,15 @@ export async function sendGAS(payload: string) {
 
   const res = await fetch(endpoint, {
     method: "POST",
-    redirect: "manual",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ secret, payload }),
+    body: JSON.stringify({ secret, diff }), // payload -> diff
   });
-
-  if (res.status === 302) {
-    const loc = res.headers.get("location");
-    console.log("[GAS] status: 302");
-    console.log("[GAS] location:", loc);
-    return;
-  }
 
   if (!res.ok) {
     throw new Error(`GAS error: ${res.status} ${await res.text().catch(() => "")}`);
   }
 }
+
 
 export async function sendSlack(text: string) {
   const url = process.env.SLACK_WEBHOOK_URL;
