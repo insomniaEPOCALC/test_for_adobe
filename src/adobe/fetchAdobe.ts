@@ -5,7 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const TARGET_URL = "https://www.adobe.com/jp/legal/terms.html";
-const DOCS_URL = "docs作成後にURLを追加";
+const DOCS_URL =
+  "https://docs.google.com/document/d/1RDNaPbDWSFQyS8kv01GlFHN518UtE_d-Uy-h6nSgA40/edit";
 
 export async function main() {
   const fetchedHtml = await readFile("adobe.txt", "utf8");
@@ -27,15 +28,17 @@ export async function main() {
   }
 
   const changedIds = getChangedIds(beforeMap, afterMap);
-
+  console.log(changedIds);
   let $links: string[] = [];
 
   for (const id of changedIds) {
     $links.push(TARGET_URL + `#${id}`);
   }
 
+  console.log($links);
   const diff = await buildSectionDiffs(changedIds, beforeMap, afterMap);
 
+  console.log(diff);
   await sendGAS(diff);
 
   const slackText =
@@ -46,7 +49,9 @@ export async function main() {
     `\n\n差分ファイル:\n` +
     DOCS_URL;
 
-  await sendSlack(slackText);
+    console.log(slackText);
+
+  //await sendSlack(slackText);
 
   await writeFile("text/latestAdobe.txt", fetchedHtml, "utf8");
 }
@@ -189,7 +194,7 @@ export async function sendSlack(text: string) {
     );
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

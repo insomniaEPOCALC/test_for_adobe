@@ -1,0 +1,23 @@
+name: test-action-unit
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  models: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install
+      - run: curl -L --max-time 60 -o adobe.txt https://www.adobe.com/jp/legal/terms.html
+      - run: npx tsx src/adobe/fetchAdobe.ts
+        env:
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SHARED_SECRET: ${{ secrets.GAS_SHARED_SECRET }}
