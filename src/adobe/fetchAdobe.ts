@@ -11,7 +11,7 @@ const DOCS_URL =
 export async function main() {
   const fetchedHtml = await readFile("adobe.txt", "utf8");
 
-  const prevHtml = await readFile("text/latestAdobe.txt", "utf8");
+  const prevHtml = await readFile("text/latestAdobePolicy.txt", "utf8");
 
   if (fetchedHtml === prevHtml) {
     console.log("No changes detected.");
@@ -53,7 +53,7 @@ export async function main() {
 
   //await sendSlack(slackText);
 
-  await writeFile("text/latestAdobe.txt", fetchedHtml, "utf8");
+  await writeFile("text/latestAdobePolicy.txt", fetchedHtml, "utf8");
 }
 
 export function extractH3Sections(html: string): Map<string, string> {
