@@ -41,6 +41,9 @@ export async function main() {
   console.log("diffText:" + diff);
   await sendGAS(diff);
 
+  console.log("diff length:", diff.length);
+  console.log("diff preview:", diff.slice(0, 500));
+
   const slackText =
     `❗️Adobe規約が更新されました\n` +
     `対象URL: ${TARGET_URL}\n` +
@@ -69,7 +72,7 @@ export function extractH3Sections(html: string): Map<string, string> {
 
     const heading = h3.text().trim();
 
-    const bodyNodes = h3.nextUntil("h3[id]");
+    const bodyNodes = h3.nextUntil("h3");
 
     const parts: string[] = [];
     if (heading) parts.push(`# ${heading}`);
