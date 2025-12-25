@@ -11,7 +11,6 @@ const DOCS_URL =
 export async function main() {
   const fetchedHtml = await readFile("adobe.txt", "utf8");
 
-
   const prevHtml = await readFile("text/latestAdobePolicy.txt", "utf8");
 
   if (fetchedHtml === prevHtml) {
@@ -84,12 +83,19 @@ export function extractH3Sections(html: string): Map<string, string> {
     .trim();
 
   const map = new Map<string, string>();
-  const chunks = text.split(SEP).map((s) => s.trim()).filter(Boolean);
+  const chunks = text
+    .split(SEP)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   for (const chunk of chunks) {
     const firstLineEnd = chunk.indexOf("\n");
-    const headerPart = (firstLineEnd >= 0 ? chunk.slice(0, firstLineEnd) : chunk).trim();
-    const bodyPart = (firstLineEnd >= 0 ? chunk.slice(firstLineEnd + 1) : "").trim();
+    const headerPart = (
+      firstLineEnd >= 0 ? chunk.slice(0, firstLineEnd) : chunk
+    ).trim();
+    const bodyPart = (
+      firstLineEnd >= 0 ? chunk.slice(firstLineEnd + 1) : ""
+    ).trim();
 
     const m = headerPart.match(/^(.+?)@@(.+?)@@$/);
     if (!m) continue;
@@ -97,10 +103,7 @@ export function extractH3Sections(html: string): Map<string, string> {
     const id = m[1].trim();
     const heading = m[2].trim();
 
-    const body = [`# ${heading}`, bodyPart]
-      .filter(Boolean)
-      .join("\n\n")
-      .trim();
+    const body = [`# ${heading}`, bodyPart].filter(Boolean).join("\n\n").trim();
 
     map.set(id, body);
   }
@@ -189,8 +192,14 @@ export async function sendGAS(payload: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ secret, payload }),
+    redirect: "manual",
   });
 
+  const text = await res.text().catch(() => "");
+
+  console.log("[GAS] status:", res.status);
+  console.log("[GAS] location:", res.headers.get("location"));
+  console.log("[GAS] body:", text.slice(0, 500));
   if (!res.ok)
     throw new Error(
       `GAS error: ${res.status} ${await res.text().catch(() => "")}`
