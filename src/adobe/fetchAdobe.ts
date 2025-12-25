@@ -72,7 +72,7 @@ export function extractH3Sections(html: string): Map<string, string> {
 
     const heading = h3.text().trim();
 
-    const bodyNodes = h3.nextUntil("h3");
+    const bodyNodes = h3.nextUntil("h3[id]");
 
     const parts: string[] = [];
     if (heading) parts.push(`# ${heading}`);
