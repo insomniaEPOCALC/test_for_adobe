@@ -46,6 +46,7 @@ export async function main() {
 
   const slackText =
     `❗️Adobe規約が更新されました\n` +
+    `変更日:${new Date().toLocaleString("ja-JP")}\n` +
     `変更箇所:\n` +
     $links.map((url) => `- ${url}`).join("\n") +
     `\n\n差分ファイル:\n` +
