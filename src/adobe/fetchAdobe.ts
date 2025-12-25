@@ -28,17 +28,17 @@ export async function main() {
   }
 
   const changedIds = getChangedIds(beforeMap, afterMap);
-  console.log(changedIds);
+  console.log("changedIds:" + changedIds);
   let $links: string[] = [];
 
   for (const id of changedIds) {
     $links.push(TARGET_URL + `#${id}`);
   }
 
-  console.log($links);
+  console.log("$links:" + $links);
   const diff = await buildSectionDiffs(changedIds, beforeMap, afterMap);
 
-  console.log(diff);
+  console.log("diffText:" + diff);
   await sendGAS(diff);
 
   const slackText =
@@ -49,7 +49,7 @@ export async function main() {
     `\n\n差分ファイル:\n` +
     DOCS_URL;
 
-    console.log(slackText);
+  console.log("slackText:" + slackText);
 
   //await sendSlack(slackText);
 
@@ -68,10 +68,13 @@ export function extractH3Sections(html: string): Map<string, string> {
     if (!id) return;
 
     const parts: string[] = [];
-    let next = h3.next();
+    const heading = h3.text().trim();
+    if (heading) parts.push(`# ${heading}`);
 
-    while (next.length && next[0].tagName !== "h3") {
-      parts.push(next.text());
+    let next = h3.next();
+    while (next.length && !next.is("h3[id]")) {
+      const txt = next.text().trim();
+      if (txt) parts.push(txt);
       next = next.next();
     }
 
@@ -144,9 +147,6 @@ export function gitDiff(
         "--no-index",
         "--color=never",
         "-U0",
-        "--ignore-blank-lines",
-        "-w",
-        "--word-diff=plain",
         "--",
         beforePath,
         afterPath,
