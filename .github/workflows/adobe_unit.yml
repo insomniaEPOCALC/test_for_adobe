@@ -15,7 +15,8 @@ jobs:
           node-version: 24
       - run: npm install
       - run: curl -L --max-time 60 -o adobe.txt https://www.adobe.com/jp/legal/terms.html
-      - run: npx tsx src/adobe/fetchAdobe.ts 
+      - run: |
+          npx tsx src/adobe/fetchAdobe.ts
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
