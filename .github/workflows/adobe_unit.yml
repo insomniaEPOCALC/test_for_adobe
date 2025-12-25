@@ -15,16 +15,16 @@ jobs:
           node-version: 24
       - run: npm install
       - run: curl -L --max-time 60 -o adobe.txt https://www.adobe.com/jp/legal/terms.html
-      - run: npx tsx src/adobe/fetchAdobe.ts
-        env:
-          NODE_OPTIONS: --dns-result-order=ipv4first
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
-          GAS_SHARED_SECRET: ${{ secrets.GAS_SHARED_SECRET }}
-      - run: git config user.name "github-actions[bot]"
+      - run: npx tsx src/adobe/fetchAdobe.ts 
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           rm -f adobe.txt
           git add -u
           git commit -m "update:update adobe terms"
           git push
+        env:
+          NODE_OPTIONS: --dns-result-order=ipv4first
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SHARED_SECRET: ${{ secrets.GAS_SHARED_SECRET }}
