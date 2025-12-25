@@ -1,4 +1,4 @@
-name: test-action-unit
+name: action-adobe-routine
 on:
   workflow_dispatch:
   schedule:
@@ -36,3 +36,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
           GAS_SHARED_SECRET: ${{ secrets.GAS_SHARED_SECRET }}
+          

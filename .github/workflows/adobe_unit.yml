@@ -1,4 +1,4 @@
-name: test-action-unit
+name: action-unit
 on:
   workflow_dispatch:
 
