@@ -66,34 +66,46 @@ export function extractH3Sections(html: string): Map<string, string> {
   const $ = cheerio.load(html);
   $("script, style, noscript").remove();
 
-  const map = new Map<string, string>();
+  const SEP = "\n\n@@H3@@";
+  const END = "@@\n";
 
   $("h3[id]").each((_, el) => {
     const h3 = $(el);
     const id = h3.attr("id");
     if (!id) return;
 
-    const heading = h3.text().trim();
+    const heading = h3.text().trim().replace(/\s+/g, " ");
+    h3.replaceWith(`${SEP}${id}@@${heading}${END}`);
+  });
 
-    const bodyNodes = h3.nextUntil("h3[id]");
+  const text = $("main")
+    .text()
+    .replace(/\r/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
-    const parts: string[] = [];
-    if (heading) parts.push(`# ${heading}`);
+  const map = new Map<string, string>();
+  const chunks = text.split(SEP).map((s) => s.trim()).filter(Boolean);
 
-    bodyNodes.each((_, node) => {
-      const t = $(node).text().trim();
-      if (t) parts.push(t);
-    });
+  for (const chunk of chunks) {
+    const firstLineEnd = chunk.indexOf("\n");
+    const headerPart = (firstLineEnd >= 0 ? chunk.slice(0, firstLineEnd) : chunk).trim();
+    const bodyPart = (firstLineEnd >= 0 ? chunk.slice(firstLineEnd + 1) : "").trim();
 
-    const body = parts
+    const m = headerPart.match(/^(.+?)@@(.+?)@@$/);
+    if (!m) continue;
+
+    const id = m[1].trim();
+    const heading = m[2].trim();
+
+    const body = [`# ${heading}`, bodyPart]
+      .filter(Boolean)
       .join("\n\n")
-      .replace(/\r/g, "\n")
-      .replace(/[ \t]+\n/g, "\n")
-      .replace(/\n{3,}/g, "\n\n")
       .trim();
 
     map.set(id, body);
-  });
+  }
 
   return map;
 }
