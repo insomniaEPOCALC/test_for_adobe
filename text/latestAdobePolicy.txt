@@ -1565,7 +1565,7 @@
         <div class="text xs-spacing-bottom s-heading">
           <div>
             <div data-valign="middle">
-              <h3 id="本サービスおよび本ソフトウェアのアップデート">16.1 本サー���スおよび本ソフトウェアのアップデート</h3>
+              <h3 id="本サービスおよび本ソフトウェアのアップデート">16.1 本サービスおよび本ソフトウェアのアップデート</h3>
             </div>
           </div>
         </div>
